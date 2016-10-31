@@ -92,6 +92,11 @@ it in a WinForms application.
 
 The author of this project, specifically the web implementation of the Periodic Sunburst Chart, is [Christian Gaetano](https://github.com/cgatno).
 
+## VCS Workflow
+
+For this project I'll be using the [Gitflow Workflow](https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow) 
+which is derived from an original methodology used by Vincent Driessen.
+
 ## License
 
 This project is currently licensed under the [MIT license](LICENSE) (subject to change). GrapeCity reserves all rights and ownership 
