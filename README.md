@@ -94,7 +94,7 @@ The author of this project, specifically the web implementation of the Periodic 
 
 ## License
 
-This project is currently licensed under the MIT license (subject to change). GrapeCity reserves all rights and ownership 
+This project is currently licensed under the [MIT license](LICENSE) (subject to change). GrapeCity reserves all rights and ownership 
 of the Wijmo controls and of this project.
 
 ## Further Reading / Useful Links
