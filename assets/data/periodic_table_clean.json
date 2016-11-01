@@ -2827,6 +2827,7 @@
             "period": "7",
             "group": "13",
             "phase": "artificial",
+            "type": "Transactinide",
             "display-row": "7",
             "display-column": "13"
         }
@@ -2854,6 +2855,7 @@
             "period": "7",
             "group": "15",
             "phase": "artificial",
+            "type": "Transactinide",
             "display-row": "7",
             "display-column": "15"
         }
@@ -2881,6 +2883,7 @@
             "period": "7",
             "group": "17",
             "phase": "artificial",
+            "type": "Transactinide",
             "display-row": "7",
             "display-column": "17"
         }
