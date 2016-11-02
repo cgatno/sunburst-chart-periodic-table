@@ -1,22 +1,12 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 'use strict';
 var DataSourceAdapter = require('./lib/data/DAL/DataSourceAdapter');
-
-// Hook up plain old DOM event handlers
-let domSunburst = document.getElementById('periodic-sunburst');
-if (domSunburst.addEventListener) { // all browsers except IE before version 9
-    domSunburst.addEventListener("click", sunburstClicked, false);
-} else {
-    if (domSunburst.attachEvent) { // IE before version 9
-        domSunburst.attachEvent("click", sunburstClicked);
-    }
-}
+var ViewAdapter = require('./lib/view/ViewAdapter');
 
 // Declare the sunburst object in the global scope so we can reference it in
 // event handlers, etc.
-let mySunburst;
 DataSourceAdapter.getChartDataSource(function (dataArray) {
-    mySunburst = new wijmo.chart.hierarchical.Sunburst('#periodic-sunburst');
+    let mySunburst = new wijmo.chart.hierarchical.Sunburst('#periodic-sunburst');
     // Let the Sunburst Chart know we're going to start making changes
     mySunburst.beginUpdate();
 
@@ -32,20 +22,18 @@ DataSourceAdapter.getChartDataSource(function (dataArray) {
     mySunburst.bindingName = ['groupName', 'subGroupName', 'eleSymbol'];
     mySunburst.childItemsPath = ['subGroups', 'elements'];
 
+    mySunburst.hostElement.addEventListener('click', function (e) {
+        let ht = mySunburst.hitTest(e.pageX, e.pageY);
+        console.log(ViewAdapter.mapChartNameToObject(ht.name, mySunburst.collectionView));
+    });
+
     mySunburst.endUpdate();
 
     console.log('Sunburst chart initialized:');
     console.log(mySunburst);
 });
 
-function sunburstClicked(event) {
-    let mouseX = event.clientX, mouseY = event.clientY;
-    let hitTestInfo = mySunburst.hitTest(mouseX, mouseY);
-    console.log('Gathered HitTestInfo for click:');
-    console.log(hitTestInfo);
-}
-
-},{"./lib/data/DAL/DataSourceAdapter":2}],2:[function(require,module,exports){
+},{"./lib/data/DAL/DataSourceAdapter":2,"./lib/view/ViewAdapter":7}],2:[function(require,module,exports){
 'use strict';
 /**
  * DataSourceAdapter.js
@@ -85,18 +73,18 @@ DataSourceAdapter.prototype.getChartDataSource = function (callback) {
     // Add all of the metals subGroups
     for (let i = 0; i < metalTypes.length; i++) {
         if (metalTypes[i] === 'Metal') {
-            metals.subGroups.push(new SubGroup('Others'));
+            metals.subGroups.push(new SubGroup('Other Metals'));
         } else {
             metals.subGroups.push(new SubGroup(metalTypes[i]));
         }
         metals.subGroups[i].characteristics = metalTypeDescriptions[i];
     }
 
-    let nonmetals = new Group('Non Metals');
+    let nonmetals = new Group('Nonmetals');
     // Add all of the nonmetal subGroups
     for (let i = 0; i < nonmetalTypes.length; i++) {
         if (nonmetalTypes[i] === 'Nonmetal') {
-            nonmetals.subGroups.push(new SubGroup('Others'));
+            nonmetals.subGroups.push(new SubGroup('Other Nonmetals'));
         } else {
             nonmetals.subGroups.push(new SubGroup(nonmetalTypes[i]));
         }
@@ -293,4 +281,58 @@ JsonDataLoader.prototype.getObjectFromJson = function (jsonFilePath, callback) {
 
 module.exports = new JsonDataLoader();
 
-},{}]},{},[1]);
+},{}],7:[function(require,module,exports){
+'use strict';
+/**
+ * ViewAdapter.js
+ * 
+ * Provides some helper methods for handling Sunburst Chart events and generating the "property tiles"
+ * dynamically based on chart selections.
+ * 
+ */
+
+// Pull in dependencies
+var Element = require('../data/model/Element');
+var SubGroup = require('../data/model/SubGroup');
+var Group = require('../data/model/Group');
+
+var ViewAdapter = function () {};
+
+ViewAdapter.prototype.mapChartNameToObject = function (chartItemName, chartCollectionView) {
+    let chartGroups = chartCollectionView.items; // grab the array of Group objects from the chart
+    return findObjectWithMatchingName(chartGroups, chartItemName);
+};
+
+function findObjectWithMatchingName(haystack, needle) {
+    // We should be entering this method with the haystack being an array of Groups, SubGroups, or Elements
+    // We have to loop through the array and, depending on the type of object, check to see if it's what
+    // we're looking for
+    for (let i = 0; i < haystack.length; i++) {
+        let currentObject = haystack[i];
+        if (currentObject instanceof Group) { // we have a Group
+            if (currentObject.groupName === needle) {
+                return currentObject;
+            } else {
+                let subSearch = findObjectWithMatchingName(currentObject.subGroups, needle);
+                if (typeof (subSearch) !== 'undefined') {
+                    return subSearch;
+                }
+            }
+        } else if (currentObject instanceof SubGroup) { // we have a SubGroup
+            if (currentObject.subGroupName === needle) {
+                return currentObject;
+            } else {
+                let subSearch = findObjectWithMatchingName(currentObject.elements, needle);
+                if (typeof (subSearch) !== 'undefined') {
+                    return subSearch;
+                }
+            }
+        } else { // must be an Element
+            if (currentObject.eleSymbol === needle) return currentObject;
+        }
+    }
+}
+
+module.exports = new ViewAdapter();
+
+},{"../data/model/Element":3,"../data/model/Group":4,"../data/model/SubGroup":5}]},{},[1]);
