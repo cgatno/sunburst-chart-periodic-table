@@ -12,6 +12,8 @@ body {
     font-weight: 300;
 }
 
+/* The Sunburst chart and its container */
+
 .periodic-sunburst {
     width: 100vw;
     height: 99vh;
@@ -32,4 +34,70 @@ body {
 
 .wj-tooltip {
     display: none;
+}
+
+/* The properties tile that goes in the center of the chart */
+
+.properties-tile {
+    display: block;
+    position: absolute;
+    height: 25%;
+    width: 10%;
+    background: transparent;
+    visibility: hidden;
+    text-align: center;
+    padding: 50px 5px 0 5px;
+}
+
+.properties-tile > div {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: none;
+    padding: 0;
+    margin: 0;
+    border: none;
+}
+
+.properties-tile > div > span {
+    display: block;
+}
+
+/* Specific info pane styling */
+/* TODO: use classes, not ids EVERYWHERE */
+
+#element-symbol {
+    font-size: 2em;
+    margin-bottom: 5px;
+}
+
+#element-name, #group-name {
+    font-size: 1.25em;
+    margin-bottom: 20px;
+}
+
+#group-name {
+    font-size: 1.5em;
+}
+
+.subgroups-title {
+    font-weight: bold;
+}
+
+#subGroup-name {
+    font-size: 1.25em;
+    margin-bottom: 5px;
+}
+
+.element-number-overview {
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+#num-elements {
+    font-weight: normal;
+}
+
+.characteristics-title {
+    font-weight: bold;
 }

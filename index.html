@@ -4,7 +4,6 @@
 <head>
     <meta charset="utf-8">
     <title>Wijmo 5 Periodic Sunburst</title>
-
     <!-- Core Wijmo references (required) -->
     <script src="vendor/wijmo5/js/wijmo.min.js"></script>
     <link href="vendor/wijmo5/css/wijmo.min.css" rel="stylesheet">
@@ -13,12 +12,33 @@
     <script src="vendor/wijmo5/js/wijmo.chart.hierarchical.min.js"></script>
     <!-- Wijmo custom theme (optional, include the theme you like) -->
     <link href="vendor/wijmo5/css/wijmo.theme.modern.min.css" rel="stylesheet">
-
     <link href="assets/css/style-main.min.css" rel="stylesheet">
+    <script src="https://use.typekit.net/jdk7elo.js"></script>
+    <script>try{Typekit.load({ async: true });}catch(e){}</script>
 </head>
 
-<body>
+<body class="tk-ingra-2">
     <div id="periodic-sunburst" class="periodic-sunburst">
+        <div id="properties-tile" class="properties-tile">
+            <div id="group-info">
+                <span id="group-name"></span>
+                <span class="subgroups-title">Subgroups</span>
+                <span id="subgroup-listing"></span>
+            </div>
+            <div id="subGroup-info">
+                <span id="subGroup-name"></span>
+                <span class="element-number-overview">No. of elements: <span id="num-elements"></span></span>
+                <span class="characteristics-title">Characteristics</span>
+                <span id="characteristic-listing"></span>
+            </div>
+            <div id="element-info">
+                <span id="element-symbol"></span>
+                <span id="element-name"></span>
+                <span>Atomic number: <span id="atomic-number"></span></span>
+                <span>Atmoic weight: <span id="atomic-weight"></span></span>
+            </div>
+        </div>
+    </div>
     <script src="assets/js/bundle.min.js"></script>
 </body>
 

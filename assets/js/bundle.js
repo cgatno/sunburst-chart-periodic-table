@@ -2,10 +2,17 @@
 'use strict';
 var DataSourceAdapter = require('./lib/data/DAL/DataSourceAdapter');
 var ViewAdapter = require('./lib/view/ViewAdapter');
+var PropertiesTile = require('./lib/view/PropertiesTile');
 
 // Declare the sunburst object in the global scope so we can reference it in
 // event handlers, etc.
 DataSourceAdapter.getChartDataSource(function (dataArray) {
+    // Initialize the property tile by loading it into its module
+    let myPropTile = new PropertiesTile(document.getElementById('properties-tile'));
+    window.onresize = function () {
+        myPropTile.centerInParent();
+    };
+
     let mySunburst = new wijmo.chart.hierarchical.Sunburst('#periodic-sunburst');
     // Let the Sunburst Chart know we're going to start making changes
     mySunburst.beginUpdate();
@@ -24,7 +31,7 @@ DataSourceAdapter.getChartDataSource(function (dataArray) {
 
     mySunburst.hostElement.addEventListener('click', function (e) {
         let ht = mySunburst.hitTest(e.pageX, e.pageY);
-        console.log(ViewAdapter.mapChartNameToObject(ht.name, mySunburst.collectionView));
+        myPropTile.showInfoPanel(ViewAdapter.mapChartNameToObject(ht.name, mySunburst.collectionView));
     });
 
     mySunburst.endUpdate();
@@ -33,7 +40,7 @@ DataSourceAdapter.getChartDataSource(function (dataArray) {
     console.log(mySunburst);
 });
 
-},{"./lib/data/DAL/DataSourceAdapter":2,"./lib/view/ViewAdapter":7}],2:[function(require,module,exports){
+},{"./lib/data/DAL/DataSourceAdapter":2,"./lib/view/PropertiesTile":7,"./lib/view/ViewAdapter":8}],2:[function(require,module,exports){
 'use strict';
 /**
  * DataSourceAdapter.js
@@ -62,9 +69,9 @@ const otherTypes = 'Metalloid|Transactinide'.split('|');
 
 // These are all ordered by the type lists above
 // The metal and nonmetal descriptions have one extra item for the "Others" category
-const metalTypeDescriptions = 'Shiny, Soft, Highly Reactive, Low Melting Point|Ductile, Malleable, Low Density, High Melting Point|High Melting Point, High Density|Soluble, Highly Reactive|Radioactive, Paramagnetic|Brittle, Poor Metals, Low Melting Point'.split('|');
-const nonMetalTypeDescriptions = 'Toxic, Highly Reactive, Poor Conductors|Colorless, Odorless, Low Chemical Reactivity|Volatile, Low Elasticity, Good Insulators'.split('|');
-const otherTypeDescriptions = 'Metallic looking solids, SemiConductors|Radioactive, Synthetic Elements'.split('|');
+const metalTypeDescriptions = 'Shiny,Soft,Highly Reactive,Low Melting Point|Ductile,Malleable,Low Density,High Melting Point|High Melting Point,High Density|Soluble,Highly Reactive|Radioactive,Paramagnetic|Brittle,Poor Metals,Low Melting Point'.split('|');
+const nonMetalTypeDescriptions = 'Toxic,Highly Reactive,Poor Conductors|Colorless,Odorless,Low Chemical Reactivity|Volatile,Low Elasticity,Good Insulators'.split('|');
+const otherTypeDescriptions = 'Metallic looking solids,Semiconductors|Radioactive,Synthetic Elements'.split('|');
 
 DataSourceAdapter.prototype.getChartDataSource = function (callback) {
     let groupsCollection = []; // declare an empty array to add the finished groups to - this is what we will ultimately send as a payload
@@ -282,6 +289,91 @@ JsonDataLoader.prototype.getObjectFromJson = function (jsonFilePath, callback) {
 module.exports = new JsonDataLoader();
 
 },{}],7:[function(require,module,exports){
+'use strict';
+/**
+ * PropertiesTile.js
+ * 
+ * Provides some helper methods for handling Sunburst Chart events and generating the "property tiles"
+ * dynamically based on chart selections.
+ * 
+ */
+
+// Pull in dependencies
+var Element = require('../data/model/Element');
+var SubGroup = require('../data/model/SubGroup');
+var Group = require('../data/model/Group');
+
+var PropertiesTile = function (propertiesTileDomElement) {
+    this.domElement = propertiesTileDomElement;
+
+    this.centerInParent();
+};
+
+PropertiesTile.prototype.centerInParent = function () {
+    let tile = this.domElement;
+    let parentElement = tile.parentElement;
+
+    tile.style.top = (parentElement.offsetHeight / 2) - (tile.offsetHeight / 2) + 'px';
+    tile.style.left = (parentElement.offsetWidth / 2) - (tile.offsetWidth / 2) + 'px';
+};
+
+PropertiesTile.prototype.show = function () {
+    let tile = this.domElement;
+    tile.style.visibility = 'visible';
+};
+
+PropertiesTile.prototype.hide = function () {
+    let tile = this.domElement;
+    tile.style.visibility = 'hidden';
+};
+
+const NEW_LINE_DELIM = '<br>';
+
+PropertiesTile.prototype.showInfoPanel = function (infoObject) {
+    if (typeof (infoObject) === 'undefined') { // this will happen when the user clicks "randomly" on the page - hide the tile
+        this.hide();
+    } else { // the user selected something on the chart, display the appropriate info
+        let groupInfoPane = document.getElementById('group-info');
+        let elementInfoPane = document.getElementById('element-info');
+        let subGroupInfoPane = document.getElementById('subGroup-info');
+        // Hide all of the panes initially
+        groupInfoPane.style.display = 'none';
+        subGroupInfoPane.style.display = 'none';
+        elementInfoPane.style.display = 'none';
+        if (infoObject instanceof Group) {
+            document.getElementById('group-name').innerText = infoObject.groupName;
+            document.getElementById('subgroup-listing').innerHTML = '';
+            for (let i = 0; i < infoObject.subGroups.length; i++) {
+                document.getElementById('subgroup-listing').innerHTML += infoObject.subGroups[i].subGroupName;
+                document.getElementById('subgroup-listing').innerHTML += ' ';
+                document.getElementById('subgroup-listing').innerHTML += '(' + infoObject.subGroups[i].elements.length + ')';
+                document.getElementById('subgroup-listing').innerHTML += NEW_LINE_DELIM;
+            }
+            groupInfoPane.style.display = 'block';
+        } else if (infoObject instanceof SubGroup) {
+            document.getElementById('subGroup-name').innerText = infoObject.subGroupName;
+            document.getElementById('num-elements').innerText = infoObject.elements.length;
+            document.getElementById('characteristic-listing').innerHTML = '';
+            let characteristicsArray = infoObject.characteristics.split(',');
+            for (let i = 0; i < characteristicsArray.length; i++) {
+                document.getElementById('characteristic-listing').innerHTML += characteristicsArray[i];
+                document.getElementById('characteristic-listing').innerHTML += NEW_LINE_DELIM;
+            }
+            subGroupInfoPane.style.display = 'block';
+        } else if (infoObject instanceof Element) {
+            document.getElementById('element-symbol').innerText = infoObject.eleSymbol;
+            document.getElementById('element-name').innerText = infoObject.elementName;
+            document.getElementById('atomic-number').innerText = infoObject.atomicNumber;
+            document.getElementById('atomic-weight').innerText = Number(infoObject.atomicWeight).toFixed(2);
+            elementInfoPane.style.display = 'block';
+        }
+        this.show();
+    }
+};
+
+module.exports = PropertiesTile;
+
+},{"../data/model/Element":3,"../data/model/Group":4,"../data/model/SubGroup":5}],8:[function(require,module,exports){
 'use strict';
 /**
  * ViewAdapter.js
