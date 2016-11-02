@@ -81,7 +81,7 @@ body {
 }
 
 .subgroups-title {
-    font-weight: bold;
+    font-weight: 500;
 }
 
 #subGroup-name {
@@ -90,14 +90,14 @@ body {
 }
 
 .element-number-overview {
-    font-weight: bold;
+    font-weight: 500;
     margin-bottom: 15px;
 }
 
 #num-elements {
-    font-weight: normal;
+    font-weight: 300;
 }
 
 .characteristics-title {
-    font-weight: bold;
+    font-weight: 500;
 }
