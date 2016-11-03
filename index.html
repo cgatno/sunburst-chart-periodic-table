@@ -3,6 +3,7 @@
 
 <head>
     <meta charset="utf-8">
+    <!-- Note the modified initial-scale. This makes things work smoothly on mobile by forcing the initial render to be 'zoomed out' -->
     <meta name="viewport" content="width=device-width, initial-scale=0.5">
     <title>Wijmo 5 Periodic Sunburst</title>
     <!-- Core Wijmo references (required) -->
@@ -14,12 +15,15 @@
     <!-- Wijmo custom theme (optional, include the theme you like) -->
     <link href="vendor/wijmo5/css/wijmo.theme.modern.min.css" rel="stylesheet">
     <link href="assets/css/style-main.min.css" rel="stylesheet">
+    <!-- Import Ingra 2 font from TypeKit -->
     <script src="https://use.typekit.net/jdk7elo.js"></script>
     <script>try{Typekit.load({ async: true });}catch(e){}</script>
 </head>
 
 <body class="tk-ingra-2">
+    <!-- The main container where the Sunburst control is rendered -->
     <div id="periodic-sunburst" class="periodic-sunburst">
+        <!-- The main properties container - has individual info panes for each type of info view -->
         <div id="properties-tile" class="properties-tile">
             <div id="group-info">
                 <span id="group-name"></span>
