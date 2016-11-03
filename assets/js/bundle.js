@@ -9,11 +9,12 @@ var PropertiesTile = require('./lib/view/PropertiesTile');
 DataSourceAdapter.getChartDataSource(function (dataArray) {
     // Initialize the property tile by loading it into its module
     let myPropTile = new PropertiesTile(document.getElementById('properties-tile'));
+    // Here we hook up PropertyTile's centerInParent() method to the window's resize event
     window.onresize = function () {
         myPropTile.centerInParent();
     };
 
-    let mySunburst = new wijmo.chart.hierarchical.Sunburst('#periodic-sunburst');
+    let mySunburst = new wijmo.chart.hierarchical.Sunburst('#periodic-sunburst'); // initialize!
     // Let the Sunburst Chart know we're going to start making changes
     mySunburst.beginUpdate();
 
@@ -29,15 +30,39 @@ DataSourceAdapter.getChartDataSource(function (dataArray) {
     mySunburst.bindingName = ['groupName', 'subGroupName', 'eleSymbol'];
     mySunburst.childItemsPath = ['subGroups', 'elements'];
 
+
     mySunburst.hostElement.addEventListener('click', function (e) {
+        markSelectedPanel(e.pageX, e.pageY);
+
         let ht = mySunburst.hitTest(e.pageX, e.pageY);
         myPropTile.showInfoPanel(ViewAdapter.mapChartNameToObject(ht.name, mySunburst.collectionView));
     });
 
-    mySunburst.endUpdate();
+    let lastSelectedEle;
+    let lastSelectedEleFillColor;
 
-    console.log('Sunburst chart initialized:');
-    console.log(mySunburst);
+    function markSelectedPanel(panelX, panelY) {
+        let selectedElement = document.elementFromPoint(panelX, panelY);
+        if (typeof (selectedElement) !== 'undefined' && selectedElement.tagName === 'text') {
+            let newY = panelY + 0.05;
+            markSelectedPanel(panelX, newY);
+            return false;
+        }
+        if (typeof (lastSelectedEle) !== 'undefined' && typeof (lastSelectedEleFillColor) !== 'undefined') {
+            lastSelectedEle.setAttribute('fill', lastSelectedEleFillColor);
+        }
+        if (typeof (selectedElement) !== 'undefined' && selectedElement.hasAttribute('fill') && selectedElement.tagName === 'path') {
+            lastSelectedEle = selectedElement;
+            let fillColor = selectedElement.getAttribute('fill');
+            lastSelectedEleFillColor = fillColor;
+            let rgbaValues = fillColor.replace('rgba(', '').replace(')', '').split(',');
+            rgbaValues[3] = '1.0';
+            selectedElement.setAttribute('fill', 'rgba(' + rgbaValues.join(',') + ')');
+        }
+    }
+
+    // Let the chart know that everything is updated now
+    mySunburst.endUpdate();
 });
 
 },{"./lib/data/DAL/DataSourceAdapter":2,"./lib/view/PropertiesTile":7,"./lib/view/ViewAdapter":8}],2:[function(require,module,exports){

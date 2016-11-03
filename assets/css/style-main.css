@@ -26,14 +26,17 @@ body {
 }
 
 .wj-flexchart .wj-state-selected {
-    stroke-width: 2px;
-    stroke: #F44336;
+    stroke-width: 3px;
     stroke-linecap: square;
     stroke-dasharray: 0;
 }
 
 .wj-tooltip {
     display: none;
+}
+
+.wj-data-label {
+    cursor: default;
 }
 
 /* The properties tile that goes in the center of the chart */
