@@ -43,6 +43,10 @@ DataSourceAdapter.getChartDataSource(function (dataArray) {
     let lastSelectedEle;
     let lastSelectedEleFillColor;
 
+    // Determine if we need to reshow any text elements that we hid to find the right panel
+    let reshowText = false;
+    let hiddenTextElement;
+
     /**
      * Visually marks a panel at the given coordinates as selected
      * 
@@ -58,15 +62,27 @@ DataSourceAdapter.getChartDataSource(function (dataArray) {
         // Define our selected element and check to see if it's a panel that we can fill
         let selectedElement = document.elementFromPoint(panelX, panelY);
         if (typeof (selectedElement) !== 'undefined' && selectedElement.hasAttribute('fill') && selectedElement.tagName === 'path') {
+            if (reshowText) { // if we hid a text element last time, show it now
+                hiddenTextElement.style.display = '';
+                reshowText = false;
+            }
+
+            // Reset the lastSelectedEle and then change the fill color of the clicked panel
             lastSelectedEle = selectedElement;
             let fillColor = selectedElement.getAttribute('fill');
             lastSelectedEleFillColor = fillColor;
             let rgbaValues = fillColor.replace('rgba(', '').replace(')', '').split(',');
             rgbaValues[3] = '1.0';
             selectedElement.setAttribute('fill', 'rgba(' + rgbaValues.join(',') + ')');
+        } else if (typeof (selectedElement) !== 'undefined' && selectedElement.tagName === 'text') { // super hacky way to get the right panel if a data label is clicked
+            // Hide the data label
+            selectedElement.style.display = 'none';
+            // Set our outer scope variables so the text element is reshown
+            hiddenTextElement = selectedElement;
+            reshowText = true;
+            // Run the method again with the data label hidden
+            markSelectedPanel(panelX, panelY);
         }
-
-        // TODO: provide a solution for when text within a panel is clicked before releasing v0.1.0
     }
 
     // Let the chart know that everything is updated now
