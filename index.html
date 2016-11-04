@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <!-- Note the modified initial-scale. This makes things work smoothly on mobile by forcing the initial render to be 'zoomed out' -->
+    <meta name="viewport" content="width=device-width, initial-scale=0.5">
+    <title>Wijmo 5 Periodic Sunburst</title>
+    <!-- Core Wijmo references (required) -->
+    <script src="vendor/wijmo5/js/wijmo.min.js"></script>
+    <link href="vendor/wijmo5/css/wijmo.min.css" rel="stylesheet">
+    <!-- Wijmo core chart control and hierarchical chart controls -->
+    <script src="vendor/wijmo5/js/wijmo.chart.min.js"></script>
+    <script src="vendor/wijmo5/js/wijmo.chart.hierarchical.min.js"></script>
+    <!-- Wijmo custom theme (optional, include the theme you like) -->
+    <link href="vendor/wijmo5/css/wijmo.theme.modern.min.css" rel="stylesheet">
+    <!-- Primary bootstrap import -->
+    <link rel="stylesheet" type="text/css" href="https://netdna.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+    <!-- Load our own custom CSS last -->
+    <link href="assets/css/style-main.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="header visible-xs visible-sm">
+        <div class="container">
+            <h1>
+                Sunburst Periodic Table
+            </h1>
+        </div>
+    </div>
+    <div class="header hidden-xs hidden-sm">
+        <div class="container">
+            <img src="assets/images/wijmo5.png" />
+            <h1>
+                Sunburst Periodic Table
+            </h1>
+            <p>
+                Harness the power of Wijmo's Sunburst control to create a clearer organization of periodic table elements.
+            </p>
+        </div>
+    </div>
+    <!-- The main container where the Sunburst control is rendered -->
+    <div id="periodic-sunburst" class="periodic-sunburst">
+        <!-- The main properties container - has individual info panes for each type of info view -->
+        <div id="properties-tile" class="properties-tile">
+            <div id="group-info">
+                <span id="group-name" class="group-name"></span>
+                <span class="subgroups-title">Subgroups</span>
+                <span id="subGroup-listing"></span>
+            </div>
+            <div id="subGroup-info">
+                <span id="subGroup-name" class="subGroup-name"></span>
+                <span class="element-number-overview">No. of elements: <span id="num-elements" class="num-elements"></span></span>
+                <span class="characteristics-title">Characteristics</span>
+                <span id="characteristic-listing"></span>
+            </div>
+            <div id="element-info">
+                <span id="element-symbol" class="element-symbol"></span>
+                <span id="element-name" class="element-name"></span>
+                <span>Atomic number: <span id="atomic-number"></span></span>
+                <span>Atomic weight: <span id="atomic-weight"></span></span>
+            </div>
+        </div>
+    </div>
+    <script src="assets/js/bundle.min.js"></script>
+</body>
+
+</html>

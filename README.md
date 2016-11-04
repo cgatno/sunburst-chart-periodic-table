@@ -92,12 +92,20 @@ it in a WinForms application.
 
 The author of this project, specifically the web implementation of the Periodic Sunburst Chart, is [Christian Gaetano](https://github.com/cgatno).
 
+## VCS Workflow
+
+For this project I'll be using the [Gitflow Workflow](https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow) 
+which is derived from an original methodology used by Vincent Driessen.
+
+All versioning follows the [Semantic Versioning](http://semver.org/) system of versioning.
+
 ## License
 
-This project is currently licensed under the MIT license (subject to change). GrapeCity reserves all rights and ownership 
+This project is currently licensed under the [MIT license](LICENSE) (subject to change). GrapeCity reserves all rights and ownership 
 of the Wijmo controls and of this project.
 
 ## Further Reading / Useful Links
 
 * [Wijmo 5 Sunburst Class documentation](http://wijmo.com/5/docs/topic/wijmo.chart.hierarchical.Sunburst.Class.html)
 * [Wijmo 5 general documentation](http://wijmo.com/5/docs/)
+* [Plotting Hierarchical and Flat Data in a .NET Sunburst Chart](http://our.componentone.com/2016/10/27/plotting-hierarchical-and-flat-data-in-a-net-sunburst-chart/)

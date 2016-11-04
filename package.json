@@ -1,0 +1,44 @@
+{
+  "name": "wijmo-5-periodic-sunburst",
+  "version": "0.0.1",
+  "description": "This is a novel interactive representation of the Periodic Table of Elements using a sunburst chart instead of the traditional 2D linear depiction.",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cgatno/wijmo5_periodic_sunburst.git"
+  },
+  "keywords": [
+    "chemistry",
+    "science",
+    "browserify",
+    "wijmo",
+    "sunburst",
+    "chart",
+    "controls",
+    "javascript",
+    "es6",
+    "periodic",
+    "table"
+  ],
+  "author": "Christian Gaetano",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/cgatno/wijmo5_periodic_sunburst/issues"
+  },
+  "homepage": "https://github.com/cgatno/wijmo5_periodic_sunburst#readme",
+  "devDependencies": {
+    "babel-eslint": "^7.1.0",
+    "babili": "0.0.8",
+    "browserify": "^13.1.1",
+    "clean-css": "^3.4.20",
+    "eslint": "^3.9.0",
+    "eslint-config-airbnb": "^12.0.0",
+    "eslint-plugin-import": "^1.16.0",
+    "eslint-plugin-jsx-a11y": "^2.2.3",
+    "eslint-plugin-react": "^6.4.1"
+  }
+}
