@@ -37,7 +37,7 @@ DataSourceAdapter.getChartDataSource(function (dataArray) {
 
         // Perform a hit test to get a clicked panel's name then use it to set up the info panel via the ViewAdapter
         let ht = mySunburst.hitTest(e.pageX, e.pageY);
-        myPropTile.showInfoPanel(ViewAdapter.mapChartNameToObject(ht.name, mySunburst.collectionView));
+        myPropTile.showInfoPanel(ViewAdapter.getObjectFromChartName(ht.name, mySunburst.collectionView));
     });
 
     // Set selected element variables in this outer scope to preserve them
@@ -47,8 +47,8 @@ DataSourceAdapter.getChartDataSource(function (dataArray) {
     /**
      * Visually marks a panel at the given coordinates as selected
      * 
-     * @param {number} panelX - the X coordinate of the panel to mark
-     * @param {number} panelY - the Y coordinate of the panel to mark
+     * @param {number} panelX the X coordinate of the panel to mark
+     * @param {number} panelY the Y coordinate of the panel to mark
      */
     function markSelectedPanel(panelX, panelY) {
         // First, 'unselect' (restore the fill color of) the element that was selected last, if there is one
@@ -87,6 +87,15 @@ DataSourceAdapter.getChartDataSource(function (dataArray) {
  * 
  */
 
+/* Define JSDoc callback types */
+
+/**
+ * Called when the chart data source is finished loading
+ *
+ * @callback dataSourceLoadedCallback
+ * @param {array} dataArray an array of Group objects containing SubGroups which contain Elements that can be directly loaded into the Sunburst chart
+ */
+
 // Pull in dependencies
 var Element = require('../model/Element');
 var SubGroup = require('../model/SubGroup');
@@ -107,6 +116,11 @@ const metalTypeDescriptions = 'Shiny,Soft,Highly Reactive,Low Melting Point|Duct
 const nonMetalTypeDescriptions = 'Toxic,Highly Reactive,Poor Conductors|Colorless,Odorless,Low Chemical Reactivity|Volatile,Low Elasticity,Good Insulators'.split('|');
 const otherTypeDescriptions = 'Metallic looking solids,Semiconductors|Radioactive,Synthetic Elements'.split('|');
 
+/**
+ * Loads the data to display in the Sunburst chart and formats it for delivery
+ * 
+ * @param {dataSourceLoadedCallback} callback
+ */
 DataSourceAdapter.prototype.getChartDataSource = function (callback) {
     let groupsCollection = []; // declare an empty array to add the finished groups to - this is what we will ultimately send as a payload
 
@@ -116,7 +130,7 @@ DataSourceAdapter.prototype.getChartDataSource = function (callback) {
         if (metalTypes[i] === 'Metal') {
             metals.subGroups.push(new SubGroup('Other Metals'));
         } else {
-            metals.subGroups.push(new SubGroup(metalTypes[i]));
+            metals.subGroups.push(new SubGroup(metalTypes[i] + 's'));
         }
         metals.subGroups[i].characteristics = metalTypeDescriptions[i];
     }
@@ -127,7 +141,7 @@ DataSourceAdapter.prototype.getChartDataSource = function (callback) {
         if (nonmetalTypes[i] === 'Nonmetal') {
             nonmetals.subGroups.push(new SubGroup('Other Nonmetals'));
         } else {
-            nonmetals.subGroups.push(new SubGroup(nonmetalTypes[i]));
+            nonmetals.subGroups.push(new SubGroup(nonmetalTypes[i] + 's'));
         }
         nonmetals.subGroups[i].characteristics = nonMetalTypeDescriptions[i];
     }
@@ -135,7 +149,7 @@ DataSourceAdapter.prototype.getChartDataSource = function (callback) {
     let others = new Group('Others');
     // Add all of the other subGroups
     for (let i = 0; i < otherTypes.length; i++) {
-        others.subGroups.push(new SubGroup(otherTypes[i]));
+        others.subGroups.push(new SubGroup(otherTypes[i] + 's'));
         others.subGroups[i].characteristics = otherTypeDescriptions[i];
     }
 
@@ -172,10 +186,12 @@ DataSourceAdapter.prototype.getChartDataSource = function (callback) {
             currentSubGroup.elements.push(currentElement);
         }
 
+        // Add our constructed groups to the master collection
         groupsCollection.push(metals);
         groupsCollection.push(nonmetals);
         groupsCollection.push(others);
 
+        // Deliver the collection payload to the callback
         callback(groupsCollection);
     });
 }
@@ -183,11 +199,11 @@ DataSourceAdapter.prototype.getChartDataSource = function (callback) {
 /**
  * A function designed to be used with the array.find() method to search for a SubGroup that matches a given element
  * 
- * @param {Object} subGroup - the SubGroup object to compare an element's type to
- * @returns true for a match and false for no match
+ * @param {Object} subGroup the SubGroup object to compare an element's type to
+ * @returns {boolean} true for a match and false for no match
  */
 function subGroupMatchesElementType(subGroup) {
-    return subGroup.subGroupName === this.type;
+    return subGroup.subGroupName === this.type + 's';
 }
 
 module.exports = new DataSourceAdapter();
@@ -207,7 +223,7 @@ module.exports = new DataSourceAdapter();
  * Instantiates a new Element object from the object obtained by parsing assets/data/periodic_table_clean.json
  * with our in-house JsonDataLoader
  * 
- * @param {Object} elementJObj - the object obtained by parsing assets/data/periodic_table_clean.json
+ * @param {Object} elementJObj the object obtained by parsing assets/data/periodic_table_clean.json
  * with our in-house JsonDataLoader
  */
 var Element = function (elementJObj) {
@@ -290,14 +306,14 @@ module.exports = SubGroup;
  * This is a readFileCallback for returning file contents as a string.
  *
  * @callback readFileCallback
- * @param {string} fileContents - the file contents read from the specified file
+ * @param {string} fileContents the file contents read from the specified file
  */
 
 /**
  * This is a loadObjectCallback for returning an object parsed out from JSON
  *
  * @callback loadObjectCallback
- * @param {Object} jsonObject - the JavaScript object parsed from the specified JSON file
+ * @param {Object} jsonObject the JavaScript object parsed from the specified JSON file
  */
 
 var JsonDataLoader = function () {};
@@ -306,8 +322,8 @@ var JsonDataLoader = function () {};
  * This is a privately scoped function to read a local or remote file's text contents and return them as a payload to a 
  * callback function.
  * 
- * @param {string} filePath - a relative or absolute local path or a remote URL to the file to read
- * @param {readFileCallback} callback - a callback function that is passed the file contents as a string upon success
+ * @param {string} filePath a relative or absolute local path or a remote URL to the file to read
+ * @param {readFileCallback} callback a callback function that is passed the file contents as a string upon success
  */
 function readFileContents(filePath, callback) {
     let reqClient = new XMLHttpRequest();
@@ -319,8 +335,8 @@ function readFileContents(filePath, callback) {
 /**
  * Loads a JSON file and parses its contents into a new JavaScript object
  * 
- * @param {string} jsonFilePath - a relative or absolute local path or a remote URL to the file to read 
- * @param {loadObjectCallback} callback - a function that is passed the parsed JSON as a JavaScript object upon loading
+ * @param {string} jsonFilePath a relative or absolute local path or a remote URL to the file to read 
+ * @param {loadObjectCallback} callback a function that is passed the parsed JSON as a JavaScript object upon loading
  */
 JsonDataLoader.prototype.getObjectFromJson = function (jsonFilePath, callback) {
     readFileContents(jsonFilePath, function (eventArgs) {
@@ -345,12 +361,20 @@ var Element = require('../data/model/Element');
 var SubGroup = require('../data/model/SubGroup');
 var Group = require('../data/model/Group');
 
+/**
+ * Instantiates a PropertiesTile Object to handle the DOM functions, events and layouts of an element that will display the properties
+ * 
+ * @param {Object} propertiesTileDomElement - the DOM element to initialize as the properties tile
+ */
 var PropertiesTile = function (propertiesTileDomElement) {
     this.domElement = propertiesTileDomElement;
 
     this.centerInParent();
 };
 
+/**
+ * Centers the properties tile element in its parent container
+ */
 PropertiesTile.prototype.centerInParent = function () {
     let tile = this.domElement;
     let parentElement = tile.parentElement;
@@ -359,11 +383,17 @@ PropertiesTile.prototype.centerInParent = function () {
     tile.style.left = (parentElement.offsetWidth / 2) - (tile.offsetWidth / 2) + 'px';
 };
 
+/**
+ * Shows the properties tile element by changing its visibility style
+ */
 PropertiesTile.prototype.show = function () {
     let tile = this.domElement;
     tile.style.visibility = 'visible';
 };
 
+/**
+ * Hides the properties tile element by changing its visibility style
+ */
 PropertiesTile.prototype.hide = function () {
     let tile = this.domElement;
     tile.style.visibility = 'hidden';
@@ -371,6 +401,11 @@ PropertiesTile.prototype.hide = function () {
 
 const NEW_LINE_DELIM = '<br>';
 
+/**
+ * Initializes an info panel for the provided Group, SubGroup or Element object then shows the properties grid and info panel
+ * 
+ * @param {Object} infoObject a Group, SubGroup or Element object
+ */
 PropertiesTile.prototype.showInfoPanel = function (infoObject) {
     if (typeof (infoObject) === 'undefined') { // this will happen when the user clicks "randomly" on the page - hide the tile
         this.hide();
@@ -382,33 +417,41 @@ PropertiesTile.prototype.showInfoPanel = function (infoObject) {
         groupInfoPane.style.display = 'none';
         subGroupInfoPane.style.display = 'none';
         elementInfoPane.style.display = 'none';
-        if (infoObject instanceof Group) {
+        if (infoObject instanceof Group) { // infoObject is a Group
+            // Save the subGroup-listing element in a variable since we use it a lot
+            let subGroupListing = document.getElementById('subGroup-listing');
             document.getElementById('group-name').innerText = infoObject.groupName;
-            document.getElementById('subgroup-listing').innerHTML = '';
+            subGroupListing.innerHTML = '';
+            // Show all SubGroups and the number of elements in each
             for (let i = 0; i < infoObject.subGroups.length; i++) {
-                document.getElementById('subgroup-listing').innerHTML += infoObject.subGroups[i].subGroupName;
-                document.getElementById('subgroup-listing').innerHTML += ' ';
-                document.getElementById('subgroup-listing').innerHTML += '(' + infoObject.subGroups[i].elements.length + ')';
-                document.getElementById('subgroup-listing').innerHTML += NEW_LINE_DELIM;
+                subGroupListing.innerHTML += infoObject.subGroups[i].subGroupName;
+                subGroupListing.innerHTML += ' ';
+                subGroupListing.innerHTML += '(' + infoObject.subGroups[i].elements.length + ')';
+                subGroupListing.innerHTML += NEW_LINE_DELIM;
             }
-            groupInfoPane.style.display = 'block';
-        } else if (infoObject instanceof SubGroup) {
+            groupInfoPane.style.display = 'block'; // show the group info pane
+        } else if (infoObject instanceof SubGroup) { // infoObject is a SubGroup so show the number of elements and properties
             document.getElementById('subGroup-name').innerText = infoObject.subGroupName;
             document.getElementById('num-elements').innerText = infoObject.elements.length;
-            document.getElementById('characteristic-listing').innerHTML = '';
+            // Save the characteristic-listing element in a variable since we use it a lot
+            let characteristicListing = document.getElementById('characteristic-listing');
+            characteristicListing.innerHTML = '';
+            // Split the characteristics up so we can display them as a list
             let characteristicsArray = infoObject.characteristics.split(',');
             for (let i = 0; i < characteristicsArray.length; i++) {
-                document.getElementById('characteristic-listing').innerHTML += characteristicsArray[i];
-                document.getElementById('characteristic-listing').innerHTML += NEW_LINE_DELIM;
+                characteristicListing.innerHTML += characteristicsArray[i];
+                characteristicListing.innerHTML += NEW_LINE_DELIM;
             }
-            subGroupInfoPane.style.display = 'block';
-        } else if (infoObject instanceof Element) {
+            subGroupInfoPane.style.display = 'block'; // show the subGroup info pane
+        } else if (infoObject instanceof Element) { // the infoObject is an Element, display its props
             document.getElementById('element-symbol').innerText = infoObject.eleSymbol;
             document.getElementById('element-name').innerText = infoObject.elementName;
             document.getElementById('atomic-number').innerText = infoObject.atomicNumber;
             document.getElementById('atomic-weight').innerText = Number(infoObject.atomicWeight).toFixed(2);
-            elementInfoPane.style.display = 'block';
+            elementInfoPane.style.display = 'block'; // show element info pane
         }
+
+        // Center properties tile in the parent then show it
         this.centerInParent();
         this.show();
     }
@@ -433,11 +476,25 @@ var Group = require('../data/model/Group');
 
 var ViewAdapter = function () {};
 
-ViewAdapter.prototype.mapChartNameToObject = function (chartItemName, chartCollectionView) {
+/**
+ * Gets an object associated with a panel on the Sunburst chart by looking up the data label/name for that panel
+ * 
+ * @param {string} chartItemName the data label/name of a chart panel
+ * @param {Object} chartCollectionView the chart's collectionView object
+ * @returns {Object} a Group, SubGroup or Element object found by looking up the chartItemName
+ */
+ViewAdapter.prototype.getObjectFromChartName = function (chartItemName, chartCollectionView) {
     let chartGroups = chartCollectionView.items; // grab the array of Group objects from the chart
     return findObjectWithMatchingName(chartGroups, chartItemName);
 };
 
+/**
+ * An internal function that recursively searches through the chart's object collection for an object with a name that matches the search term
+ * 
+ * @param {Array} haystack an array of Objects to search through. In this case, this should be the root items array from a the Sunburst chart's collectionView
+ * @param {string} needle a search term to look for in the object collection. This should be a panel data label/name from the chart
+ * @returns {Object} a Group, SubGroup or Element if the lookup succeeds
+ */
 function findObjectWithMatchingName(haystack, needle) {
     // We should be entering this method with the haystack being an array of Groups, SubGroups, or Elements
     // We have to loop through the array and, depending on the type of object, check to see if it's what
