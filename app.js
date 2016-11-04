@@ -46,8 +46,8 @@ DataSourceAdapter.getChartDataSource(function (dataArray) {
     /**
      * Visually marks a panel at the given coordinates as selected
      * 
-     * @param {number} panelX - the X coordinate of the panel to mark
-     * @param {number} panelY - the Y coordinate of the panel to mark
+     * @param {number} panelX the X coordinate of the panel to mark
+     * @param {number} panelY the Y coordinate of the panel to mark
      */
     function markSelectedPanel(panelX, panelY) {
         // First, 'unselect' (restore the fill color of) the element that was selected last, if there is one
