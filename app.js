@@ -36,7 +36,7 @@ DataSourceAdapter.getChartDataSource(function (dataArray) {
 
         // Perform a hit test to get a clicked panel's name then use it to set up the info panel via the ViewAdapter
         let ht = mySunburst.hitTest(e.pageX, e.pageY);
-        myPropTile.showInfoPanel(ViewAdapter.mapChartNameToObject(ht.name, mySunburst.collectionView));
+        myPropTile.showInfoPanel(ViewAdapter.getObjectFromChartName(ht.name, mySunburst.collectionView));
     });
 
     // Set selected element variables in this outer scope to preserve them
