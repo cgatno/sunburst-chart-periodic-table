@@ -125,16 +125,13 @@ h6 {
 
 /* Specific info pane styling */
 
-
-/* TODO: use classes, not ids EVERYWHERE */
-
-#element-symbol {
+.element-symbol {
     font-size: 2em;
     margin-bottom: 5px;
 }
 
-#element-name,
-#group-name {
+.element-name,
+.group-name {
     font-size: 1.25em;
     margin-bottom: 20px;
 }
@@ -147,18 +144,18 @@ h6 {
     font-weight: 500;
 }
 
-#subGroup-name {
-    font-size: 1.25em;
+.num-elements {
+    font-weight: 400;
+}
+
+.subGroup-name {
+    font-size: 1.5em;
     margin-bottom: 5px;
 }
 
 .element-number-overview {
     font-weight: 500;
     margin-bottom: 15px;
-}
-
-#num-elements {
-    font-weight: 300;
 }
 
 .characteristics-title {

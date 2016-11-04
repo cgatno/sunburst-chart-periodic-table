@@ -68,7 +68,6 @@ DataSourceAdapter.getChartDataSource(function (dataArray) {
         }
 
         // TODO: provide a solution for when text within a panel is clicked before releasing v0.1.0
-        console.log(mySunburst);
     }
 
     // Let the chart know that everything is updated now
