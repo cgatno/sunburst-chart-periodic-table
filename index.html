@@ -14,13 +14,31 @@
     <script src="vendor/wijmo5/js/wijmo.chart.hierarchical.min.js"></script>
     <!-- Wijmo custom theme (optional, include the theme you like) -->
     <link href="vendor/wijmo5/css/wijmo.theme.modern.min.css" rel="stylesheet">
+    <!-- Primary bootstrap import -->
+    <link rel="stylesheet" type="text/css" href="https://netdna.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+    <!-- Load our own custom CSS last -->
     <link href="assets/css/style-main.min.css" rel="stylesheet">
-    <!-- Import Ingra 2 font from TypeKit -->
-    <script src="https://use.typekit.net/jdk7elo.js"></script>
-    <script>try{Typekit.load({ async: true });}catch(e){}</script>
 </head>
 
-<body class="tk-ingra-2">
+<body>
+    <div class="header visible-xs visible-sm">
+        <div class="container">
+            <h1>
+                Sunburst Periodic Table
+            </h1>
+        </div>
+    </div>
+    <div class="header hidden-xs hidden-sm">
+        <div class="container">
+            <img src="assets/images/wijmo5.png" />
+            <h1>
+                Sunburst Periodic Table
+            </h1>
+            <p>
+                Harness the power of Wijmo's Sunburst control to create a clearer organization of periodic table elements.
+            </p>
+        </div>
+    </div>
     <!-- The main container where the Sunburst control is rendered -->
     <div id="periodic-sunburst" class="periodic-sunburst">
         <!-- The main properties container - has individual info panes for each type of info view -->

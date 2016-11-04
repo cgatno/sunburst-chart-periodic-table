@@ -3,26 +3,86 @@
 }
 
 body {
-    min-height: 100%;
-    width: 100%;
-    padding: 0;
-    margin: 0;
+    background-color: #f8f8f8;
+    font-family: -apple-system-font, 'Segoe UI', 'Roboto', sans-serif;
     overflow-x: hidden;
-    font-size: 14px;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: -apple-system-font, 'Segoe UI Light', 'Segoe UI', 'Roboto', sans-serif;
     font-weight: 300;
 }
+
+h2 {
+    margin: 15px 0 30px -12px;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    color: #80044d;
+}
+
+@media(max-width: 991px) {
+    .header h1 {
+        font-size: 22px;
+        line-height: 1;
+        margin-top: 7px;
+        color: #fff;
+    }
+    h2 {
+        font-size: 22px;
+        margin: 10px 0 25px 0;
+    }
+    h4 {
+        display: none;
+    }
+}
+
+.header {
+    background-color: #80044d;
+    margin-bottom: 14px;
+    padding: 12px 0px;
+    color: #e3bfd5;
+    max-height: 15vh;
+}
+
+.header h1 {
+    font-size: 40px;
+    line-height: 1;
+    margin: 8px 0 5px 0;
+    color: #fff;
+}
+
+.header img {
+    float: left;
+    margin: 0 10px 5px 0;
+}
+
 
 /* The Sunburst chart and its container */
 
 .periodic-sunburst {
     width: 100vw;
-    height: 99vh;
+    height: 85vh;
     padding: 0.5vh 0 0 0;
     margin: 0;
+    display: block;
+    position: relative;
 }
 
 .wj-flexchart {
     border: none;
+    background: transparent;
+    background-color: transparent;
 }
 
 .wj-flexchart .wj-state-selected {
@@ -39,6 +99,7 @@ body {
     cursor: default;
 }
 
+
 /* The properties tile that goes in the center of the chart */
 
 .properties-tile {
@@ -49,7 +110,7 @@ body {
     text-align: center;
 }
 
-.properties-tile > div {
+.properties-tile>div {
     position: relative;
     display: none;
     padding: 0;
@@ -57,11 +118,14 @@ body {
     border: none;
 }
 
-.properties-tile > div > span {
+.properties-tile>div>span {
     display: block;
 }
 
+
 /* Specific info pane styling */
+
+
 /* TODO: use classes, not ids EVERYWHERE */
 
 #element-symbol {
@@ -69,7 +133,8 @@ body {
     margin-bottom: 5px;
 }
 
-#element-name, #group-name {
+#element-name,
+#group-name {
     font-size: 1.25em;
     margin-bottom: 20px;
 }
