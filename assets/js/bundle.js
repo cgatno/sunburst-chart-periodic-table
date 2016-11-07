@@ -146,7 +146,7 @@ DataSourceAdapter.prototype.getChartDataSource = function (callback) {
         if (metalTypes[i] === 'Metal') {
             metals.subGroups.push(new SubGroup('Other Metals'));
         } else {
-            metals.subGroups.push(new SubGroup(metalTypes[i] + 's'));
+            metals.subGroups.push(new SubGroup(metalTypes[i] + ((metalTypes[i].slice(-1) === 's') ? 'es' : 's')));
         }
         metals.subGroups[i].characteristics = metalTypeDescriptions[i];
     }
@@ -157,7 +157,7 @@ DataSourceAdapter.prototype.getChartDataSource = function (callback) {
         if (nonmetalTypes[i] === 'Nonmetal') {
             nonmetals.subGroups.push(new SubGroup('Other Nonmetals'));
         } else {
-            nonmetals.subGroups.push(new SubGroup(nonmetalTypes[i] + 's'));
+            nonmetals.subGroups.push(new SubGroup(nonmetalTypes[i] + ((nonmetalTypes[i].slice(-1) === 's') ? 'es' : 's')));
         }
         nonmetals.subGroups[i].characteristics = nonMetalTypeDescriptions[i];
     }
@@ -165,7 +165,7 @@ DataSourceAdapter.prototype.getChartDataSource = function (callback) {
     let others = new Group('Others');
     // Add all of the other subGroups
     for (let i = 0; i < otherTypes.length; i++) {
-        others.subGroups.push(new SubGroup(otherTypes[i] + 's'));
+        others.subGroups.push(new SubGroup(otherTypes[i] + ((otherTypes[i].slice(-1) === 's') ? 'es' : 's')));
         others.subGroups[i].characteristics = otherTypeDescriptions[i];
     }
 
@@ -219,7 +219,7 @@ DataSourceAdapter.prototype.getChartDataSource = function (callback) {
  * @returns {boolean} true for a match and false for no match
  */
 function subGroupMatchesElementType(subGroup) {
-    return subGroup.subGroupName === this.type + 's';
+    return subGroup.subGroupName === this.type + ((this.type.slice(-1) === 's') ? 'es' : 's');
 }
 
 module.exports = new DataSourceAdapter();
