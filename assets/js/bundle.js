@@ -35,7 +35,7 @@ DataSourceAdapter.getChartDataSource(function (dataArray) {
     // Set up a function to listen for click events on the Sunburst Chart's parent DOM element
     mySunburst.hostElement.addEventListener('click', function (e) {
         // If a panel is clicked, visually select it
-        markSelectedPanel(e.pageX, e.pageY);
+        markSelectedPanel(e.clientX, e.clientY);
 
         // Perform a hit test to get a clicked panel's name then use it to set up the info panel via the ViewAdapter
         let ht = mySunburst.hitTest(e.pageX, e.pageY);
@@ -547,6 +547,7 @@ module.exports = new ViewAdapter();
 
 },{"../data/model/Element":3,"../data/model/Group":4,"../data/model/SubGroup":5}],9:[function(require,module,exports){
 'use strict';
+// Polyfill for Array.find
 if (!Array.prototype.find) {
     Object.defineProperty(Array.prototype, 'find', {
         value: function (predicate) {
