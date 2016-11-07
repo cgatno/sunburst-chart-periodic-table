@@ -1,4 +1,6 @@
 'use strict';
+// Load in our compatibility shim before anything else
+var shim = require('./shim.js');
 var DataSourceAdapter = require('./lib/data/DAL/DataSourceAdapter');
 var ViewAdapter = require('./lib/view/ViewAdapter');
 var PropertiesTile = require('./lib/view/PropertiesTile');

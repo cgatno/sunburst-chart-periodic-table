@@ -1,5 +1,7 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 'use strict';
+// Load in our compatibility shim before anything else
+var shim = require('./shim.js');
 var DataSourceAdapter = require('./lib/data/DAL/DataSourceAdapter');
 var ViewAdapter = require('./lib/view/ViewAdapter');
 var PropertiesTile = require('./lib/view/PropertiesTile');
@@ -90,7 +92,7 @@ DataSourceAdapter.getChartDataSource(function (dataArray) {
     mySunburst.endUpdate();
 });
 
-},{"./lib/data/DAL/DataSourceAdapter":2,"./lib/view/PropertiesTile":7,"./lib/view/ViewAdapter":8}],2:[function(require,module,exports){
+},{"./lib/data/DAL/DataSourceAdapter":2,"./lib/view/PropertiesTile":7,"./lib/view/ViewAdapter":8,"./shim.js":9}],2:[function(require,module,exports){
 'use strict';
 /**
  * DataSourceAdapter.js
@@ -543,4 +545,31 @@ function findObjectWithMatchingName(haystack, needle) {
 
 module.exports = new ViewAdapter();
 
-},{"../data/model/Element":3,"../data/model/Group":4,"../data/model/SubGroup":5}]},{},[1]);
+},{"../data/model/Element":3,"../data/model/Group":4,"../data/model/SubGroup":5}],9:[function(require,module,exports){
+'use strict';
+if (!Array.prototype.find) {
+    Object.defineProperty(Array.prototype, 'find', {
+        value: function (predicate) {
+            if (this == null) {
+                throw new TypeError('Array.prototype.find called on null or undefined');
+            }
+            if (typeof predicate !== 'function') {
+                throw new TypeError('predicate must be a function');
+            }
+            var list = Object(this);
+            var length = list.length >>> 0;
+            var thisArg = arguments[1];
+            var value;
+
+            for (var i = 0; i < length; i++) {
+                value = list[i];
+                if (predicate.call(thisArg, value, i, list)) {
+                    return value;
+                }
+            }
+            return undefined;
+        }
+    });
+}
+
+},{}]},{},[1]);
