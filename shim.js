@@ -1,4 +1,5 @@
 'use strict';
+// Polyfill for Array.find
 if (!Array.prototype.find) {
     Object.defineProperty(Array.prototype, 'find', {
         value: function (predicate) {
