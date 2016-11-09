@@ -52,7 +52,6 @@ h6 {
     margin-bottom: 14px;
     padding: 12px 0px;
     color: #e3bfd5;
-    max-height: 15vh;
 }
 
 .header h1 {
@@ -65,6 +64,10 @@ h6 {
 .header img {
     float: left;
     margin: 0 10px 5px 0;
+}
+
+.header a {
+    color: #FFFFFF;
 }
 
 
