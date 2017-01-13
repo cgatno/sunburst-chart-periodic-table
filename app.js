@@ -26,7 +26,9 @@ function markSelectedPanel(panelX, panelY) {
 
   // Define our selected element and check to see if it's a panel that we can fill
   const selectedElement = document.elementFromPoint(panelX, panelY);
-  if (typeof (selectedElement) !== 'undefined' && selectedElement.hasAttribute('fill') && selectedElement.tagName === 'path') {
+  if (typeof (selectedElement) !== 'undefined' &&
+    selectedElement.hasAttribute('fill') &&
+    selectedElement.tagName === 'path') {
     if (reshowText) { // if we hid a text element last time, show it now
       hiddenTextElement.style.display = '';
       reshowText = false;
@@ -56,7 +58,7 @@ DataSourceAdapter.getChartDataSource((dataArray) => {
   // Initialize the property tile by loading it into its module
   const myPropTile = new PropertiesTile(document.getElementById('properties-tile'));
   // Here we hook up PropertyTile's centerInParent() method to the window's resize event
-  window.onresize = function handleWindowResize() {
+  window.onresize = function _handleWindowResize() {
     myPropTile.centerInParent();
   };
 
@@ -84,7 +86,8 @@ DataSourceAdapter.getChartDataSource((dataArray) => {
     // Perform a hit test to get a clicked panel's name then use it to set up the info panel via the
     // ViewAdapter
     const ht = mySunburst.hitTest(e.pageX, e.pageY);
-    myPropTile.showInfoPanel(ViewAdapter.getObjectFromChartName(ht.name, mySunburst.collectionView));
+    myPropTile.showInfoPanel(ViewAdapter.getObjectFromChartName(ht.name,
+      mySunburst.collectionView));
   });
 
   // Let the chart know that everything is updated now
