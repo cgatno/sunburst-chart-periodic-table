@@ -1,4 +1,6 @@
 'use strict';
+// Load in our compatibility shim before anything else
+var shim = require('./shim.js');
 var DataSourceAdapter = require('./lib/data/DAL/DataSourceAdapter');
 var ViewAdapter = require('./lib/view/ViewAdapter');
 var PropertiesTile = require('./lib/view/PropertiesTile');
@@ -32,7 +34,7 @@ DataSourceAdapter.getChartDataSource(function (dataArray) {
     // Set up a function to listen for click events on the Sunburst Chart's parent DOM element
     mySunburst.hostElement.addEventListener('click', function (e) {
         // If a panel is clicked, visually select it
-        markSelectedPanel(e.pageX, e.pageY);
+        markSelectedPanel(e.clientX, e.clientY);
 
         // Perform a hit test to get a clicked panel's name then use it to set up the info panel via the ViewAdapter
         let ht = mySunburst.hitTest(e.pageX, e.pageY);
