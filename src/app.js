@@ -1,5 +1,4 @@
 // Load in our compatibility shim before anything else
-require('./compat/shim.js');
 const DataSourceAdapter = require('./data/DAL/DataSourceAdapter');
 const ViewAdapter = require('./view/ViewAdapter');
 const PropertiesTile = require('./view/PropertiesTile');
