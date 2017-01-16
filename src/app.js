@@ -1,8 +1,7 @@
 // Load in our compatibility shim before anything else
-require('./shim.js');
-const DataSourceAdapter = require('./lib/data/DAL/DataSourceAdapter');
-const ViewAdapter = require('./lib/view/ViewAdapter');
-const PropertiesTile = require('./lib/view/PropertiesTile');
+const DataSourceAdapter = require('./data/DAL/DataSourceAdapter');
+const ViewAdapter = require('./view/ViewAdapter');
+const PropertiesTile = require('./view/PropertiesTile');
 
 // Set selected element variables in this outer scope to preserve them
 let lastSelectedEle;
