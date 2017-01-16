@@ -28,7 +28,11 @@
     "periodic",
     "table"
   ],
-  "author": "Christian Gaetano",
+  "author": {
+    "name": "Christian Gaetano",
+    "email": "christian.gaetano@grapecity.com",
+    "url": "https://christiangaetano.com"
+  },
   "bugs": {
     "url": "https://github.com/cgatno/wijmo5_periodic_sunburst/issues"
   },
