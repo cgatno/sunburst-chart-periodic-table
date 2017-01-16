@@ -1,10 +1,10 @@
 # Node.js project dependencies
 node_modules/
 
-# Wijmo 5 vendor files
+# Wijmo 5 files now loaded via CDN
 # Download Wijmo 5 trial: http://wijmo.com/download/
 # Purchase Wijmo 5: http://wijmo.com/purchase/
 # Learn about Wijmo 5 trial CDN: http://wijmo.com/5/docs/static/references.html
-vendor/
 
-wijmo5_periodic_sunburst.zip
+# 'Built' (bundled, minified, etc. - production) JavaScript and CSS files
+dist/
