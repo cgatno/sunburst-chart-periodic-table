@@ -22,8 +22,8 @@ const JsonDataLoader = require('../../util/JsonDataLoader');
 
 const DataSourceAdapter = function _DataSourceAdapter() {};
 
-// The file path for the element JSON data
-const ELEMENT_DATA_FILE_PATH = 'data/elements.json';
+// The file path for the element JSON data relative to dist/js/
+const ELEMENT_DATA_FILE_PATH = '../../assets/data/periodic_table_clean.json';
 
 // Arrays named by "Group" containing all of the possible "Subgroup" types
 const METAL_TYPES = 'Alkali Metal|Alkaline Earth Metal|Transition Metal|Lanthanide|Actinide|Metal'.split('|');
