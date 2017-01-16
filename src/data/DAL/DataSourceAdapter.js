@@ -1,13 +1,9 @@
 /**
  * DataSourceAdapter.js
  *
- * This is an adapter that generates an array of Group objects which ultimately contain all of
- * the Element objects we'll need to hook up the data source for our Sunburst chart. Generally,
- * the data is returned in the following
- *
- * format:
- *
- * [(Group->subGroups->elements) ..]
+ * This is an adapter that generates a Wijmo CollectionView which groups elements hierarchically
+ * based on their 'type' property. The CollectionView can be passed to the Sunburst chart directly
+ * as an acceptable data source.
  *
  */
 
@@ -21,38 +17,23 @@
  * Elements that can be directly loaded into the Sunburst chart
  */
 
-// Pull in dependencies
-const Element = require('../model/Element');
-const SubGroup = require('../model/SubGroup');
-const Group = require('../model/Group');
-
+// Pull in JSON data loader dependency
 const JsonDataLoader = require('../../util/JsonDataLoader');
 
 const DataSourceAdapter = function _DataSourceAdapter() {};
 
-// Define constants that we need to properly group elements
-const metalTypes = 'Alkali Metal|Alkaline Earth Metal|Transition Metal|Lanthanide|Actinide|Metal'.split('|');
-const nonmetalTypes = 'Noble Gas|Halogen|Nonmetal'.split('|');
-const otherTypes = 'Metalloid|Transactinide'.split('|');
+// The file path for the element JSON data relative to dist/js/
+const ELEMENT_DATA_FILE_PATH = '../../assets/data/periodic_table_clean.json';
 
-// These are all ordered by the type lists above
-// The metal and nonmetal descriptions have one extra item for the "Others" category
-const metalTypeDescriptions = 'Shiny,Soft,Highly Reactive,Low Melting Point|Ductile,Malleable,Low Density,High Melting Point|High Melting Point,High Density|Soluble,Highly Reactive|Radioactive,Paramagnetic|Brittle,Poor Metals,Low Melting Point'.split('|');
-const nonMetalTypeDescriptions = 'Toxic,Highly Reactive,Poor Conductors|Colorless,Odorless,Low Chemical Reactivity|Volatile,Low Elasticity,Good Insulators'.split('|');
-const otherTypeDescriptions = 'Metallic looking solids,Semiconductors|Radioactive,Synthetic Elements'.split('|');
+// Arrays named by "Group" containing all of the possible "Subgroup" types
+const METAL_TYPES = 'Alkali Metal|Alkaline Earth Metal|Transition Metal|Lanthanide|Actinide|Metal'.split('|');
+const NON_METAL_TYPES = 'Noble Gas|Halogen|Nonmetal'.split('|');
 
-/**
- * A function designed to be used with the array.find() method to search for a SubGroup that
- * matches a given element
- *
- * @param {Object} subGroup the SubGroup object to compare an element's type to
- * @returns {boolean} true for a match and false for no match
- */
-function subGroupMatchesElementType(subGroup) {
-  return subGroup.subGroupName === this.type + ((this.type.slice(-1) === 's')
-    ? 'es'
-    : 's');
-}
+// Separate out the titles that will be on the chart as constants so that they can be
+// easily changed as options later
+const METALS_TITLE = 'Metals';
+const NON_METALS_TITLE = 'Nonmetals';
+const OTHERS_TITLE = 'Others';
 
 /**
  * Loads the data to display in the Sunburst chart and formats it for delivery
@@ -60,90 +41,61 @@ function subGroupMatchesElementType(subGroup) {
  * @param {dataSourceLoadedCallback} callback
  */
 DataSourceAdapter.prototype.getChartDataSource = function _getChartDataSource(callback) {
-  // declare an empty array to add the finished groups to - this is what we will ultimately send
-  // as a payload
-  const groupsCollection = [];
+  JsonDataLoader.getObjectFromJson(ELEMENT_DATA_FILE_PATH, (rawElementData) => {
+    // Flatten the resulting raw element data array by removing the ID and "un-nesting" the
+    // properties object
+    const elementData = rawElementData['periodic-table-elements'].map((item) => {
+      const newItem = item;
+      newItem.properties.value = 1;
+      return newItem.properties;
+    });
 
-  const metals = new Group('Metals');
-  // Add all of the metals subGroups
-  for (let i = 0; i < metalTypes.length; i += 1) {
-    if (metalTypes[i] === 'Metal') {
-      metals.subGroups.push(new SubGroup('Other Metals'));
-    } else {
-      metals.subGroups.push(new SubGroup(metalTypes[i] + ((metalTypes[i].slice(-1) === 's')
-        ? 'es'
-        : 's')));
-    }
-    metals.subGroups[i].characteristics = metalTypeDescriptions[i];
-  }
+    // initialize a new object from the Wijmo CollectionView function using our "cleansed" array
+    const elementCv = new wijmo.collections.CollectionView(elementData);
 
-  const nonmetals = new Group('Nonmetals');
-  // Add all of the nonmetal subGroups
-  for (let i = 0; i < nonmetalTypes.length; i += 1) {
-    if (nonmetalTypes[i] === 'Nonmetal') {
-      nonmetals.subGroups.push(new SubGroup('Other Nonmetals'));
-    } else {
-      nonmetals.subGroups.push(new SubGroup(nonmetalTypes[i] + ((nonmetalTypes[i].slice(-1) === 's')
-        ? 'es'
-        : 's')));
-    }
-    nonmetals.subGroups[i].characteristics = nonMetalTypeDescriptions[i];
-  }
-
-  const others = new Group('Others');
-  // Add all of the other subGroups
-  for (let i = 0; i < otherTypes.length; i += 1) {
-    others.subGroups.push(new SubGroup(otherTypes[i] + ((otherTypes[i].slice(-1) === 's')
-      ? 'es'
-      : 's')));
-    others.subGroups[i].characteristics = otherTypeDescriptions[i];
-  }
-
-  // Retrieve an array listing of all elements
-  // TODO: Build in true async functionality so that we can pause execution
-  // until the JSON is loaded and parsed
-  JsonDataLoader.getObjectFromJson('../../../assets/data/periodic_table_clean.json', (jsonObj) => {
-    const jsonElementArray = jsonObj['periodic-table-elements'];
-    // Loop through all of the elements from the JSON and turn them into Element objects
-    // then sort them into their groups based on type
-    for (let i = 0; i < jsonElementArray.length; i += 1) {
-      // Make a new Element object for us to work with
-      const currentElement = new Element(jsonElementArray[i]);
-
-      // Declare empty currentGroup and currentSubGroup variables then set them based on
-      // the element type
-      let currentGroup;
-      let currentSubGroup;
-      if (metalTypes.indexOf(currentElement.type) !== -1) { // it is a metal!
-        currentGroup = metals;
-        if (currentElement.type === 'Metal') { // these belong in the "Others" category
-          // Others will always be the last SubGroup in the array
-          currentSubGroup = metals.subGroups[metals.subGroups.length - 1];
-        }
-      } else if (nonmetalTypes.indexOf(currentElement.type) !== -1) { // it is a nonmetal!
-        currentGroup = nonmetals;
-        if (currentElement.type === 'Nonmetal') { // these belong in the "Others" category
-          // Others will always be the last SubGroup in the array
-          currentSubGroup = nonmetals.subGroups[nonmetals.subGroups.length - 1];
-        }
-      } else { // it is...something else
-        currentGroup = others;
+    // Do the first tier of grouping
+    // We'll take advantage of the wijmo.collections.PropertyGroupDescription object to sort
+    // elements in the collection view based on which constant array contains their type
+    elementCv.groupDescriptions.push(new wijmo.collections.PropertyGroupDescription('type', (item, prop) => {
+      if (METAL_TYPES.includes(item[prop])) {
+        return METALS_TITLE;
+      } else if (NON_METAL_TYPES.includes(item[prop])) {
+        return NON_METALS_TITLE;
       }
-      // If the SubGroup wasn't defined above then we need to use the array's find method in
-      // conjunction with our custom function to locate the SubGroup that matches the element's type
-      if (typeof (currentSubGroup) === 'undefined') {
-        currentSubGroup = currentGroup.subGroups.find(subGroupMatchesElementType, currentElement);
+      return OTHERS_TITLE;
+    }));
+
+    // Do the second tier of grouping
+    // The only consideration we have to make here is that we don't want to duplicate group names.
+    // So if we find another "Metal" or "Nonmetal", we need to prefix it with "Other." Finally, we
+    // just want to go ahead and add the appropriate plural ending to make things sound more natural
+    elementCv.groupDescriptions.push(new wijmo.collections.PropertyGroupDescription('type',
+    (item, prop) => {
+      if (item[prop] === METAL_TYPES[METAL_TYPES.length - 1]
+        || item[prop] === NON_METAL_TYPES[NON_METAL_TYPES.length - 1]) {
+        return `Other ${item[prop]}${item[prop].endsWith('s') ? 'es' : 's'}`;
       }
-      currentSubGroup.elements.push(currentElement);
+      return item[prop] + (item[prop].endsWith('s') ? 'es' : 's');
+    }));
+
+    // Descriptions of the different subcategories ordered by the type lists above
+    // The metal and nonmetal descriptions have one extra item for the "Others" category
+    const METAL_DESCRIPTIONS = 'Shiny,Soft,Highly Reactive,Low Melting Point|Ductile,Malleable,Low Density,High Melting Point|Brittle,Poor Metals,Low Melting Point|High Melting Point,High Density|Soluble,Highly Reactive|Radioactive,Paramagnetic'.split('|');
+    const NON_METAL_DESCRIPTIONS = 'Volatile,Low Elasticity,Good Insulators|Colorless,Odorless,Low Chemical Reactivity|Toxic,Highly Reactive,Poor Conductors'.split('|');
+    const OTHER_DESCRIPTIONS = 'Metallic looking solids,Semiconductors|Radioactive,Synthetic Elements'.split('|');
+    // create an array containing all of the element description arrays
+    const DESCRIPTION_COLLECTION = [NON_METAL_DESCRIPTIONS, METAL_DESCRIPTIONS, OTHER_DESCRIPTIONS];
+
+    // Assign a new object property to each "subgroup" Object in the CollectionView based on the
+    // arrays above. This property will be stored in the CollectionView items and can be recalled
+    // later for display on the chart.
+    for (let i = 0; i < elementCv.groups.length; i += 1) {
+      for (let j = 0; j < elementCv.groups[i].groups.length; j += 1) {
+        elementCv.groups[i].groups[j].elementProperties = DESCRIPTION_COLLECTION[i][j];
+      }
     }
 
-    // Add our constructed groups to the master collection
-    groupsCollection.push(metals);
-    groupsCollection.push(nonmetals);
-    groupsCollection.push(others);
-
-    // Deliver the collection payload to the callback
-    callback(groupsCollection);
+    callback(elementCv);
   });
 };
 
