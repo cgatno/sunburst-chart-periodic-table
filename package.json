@@ -33,6 +33,7 @@
     "email": "christian.gaetano@grapecity.com",
     "url": "https://christiangaetano.com"
   },
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/cgatno/wijmo5_periodic_sunburst/issues"
   },
