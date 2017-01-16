@@ -7,4 +7,5 @@ node_modules/
 # Learn about Wijmo 5 trial CDN: http://wijmo.com/5/docs/static/references.html
 vendor/
 
-wijmo5_periodic_sunburst.zip
+# 'Built' (bundled, minified, etc. - production) JavaScript and CSS files
+dist/
