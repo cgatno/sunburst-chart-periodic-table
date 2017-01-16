@@ -1,11 +1,19 @@
 {
-  "name": "wijmo-5-periodic-sunburst",
+  "name": "periodic-sunburst-of-the-elements",
   "version": "0.0.1",
-  "description": "This is a novel interactive representation of the Periodic Table of Elements using a sunburst chart instead of the traditional 2D linear depiction.",
-  "main": "app.js",
+  "description": "This is a novel interactive representation of the Periodic Table of Elements using a Wijmo Sunburst chart instead of the traditional 2D linear depiction.",
   "local-web-server": {
     "port": 8100
   },
+  "files": [
+    "index.html",
+    "gulpfile.js",
+    ".eslintrc.json",
+    ".gitignore",
+    "src/",
+    "styles/",
+    "assets/"
+  ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint .",
