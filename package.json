@@ -3,9 +3,13 @@
   "version": "0.0.1",
   "description": "This is a novel interactive representation of the Periodic Table of Elements using a sunburst chart instead of the traditional 2D linear depiction.",
   "main": "app.js",
+  "local-web-server": {
+    "port": 8100
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "start": "ws"
   },
   "repository": {
     "type": "git",
@@ -46,6 +50,7 @@
     "gulp-sourcemaps": "^2.4.0",
     "gulp-uglify": "^2.0.0",
     "gulp-util": "^3.0.8",
+    "local-web-server": "^1.2.6",
     "vinyl-buffer": "^1.0.0",
     "vinyl-source-stream": "^1.1.0"
   }
