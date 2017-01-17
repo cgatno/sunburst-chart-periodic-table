@@ -10,11 +10,11 @@
 /* Define JSDoc callback types */
 
 /**
- * Called when the chart data source is finished loading
+ * Called when the chart data source is prepared and ready for passing
  *
  * @callback dataSourceLoadedCallback
- * @param {array} dataArray an array of Group objects containing SubGroups which contain
- * Elements that can be directly loaded into the Sunburst chart
+ * @param {array} dataArray a Wijmo CollectionView object containing a hierarchical grouping
+ * of elements based on their types
  */
 
 // Pull in JSON data loader dependency
@@ -36,7 +36,8 @@ const NON_METALS_TITLE = 'Nonmetals';
 const OTHERS_TITLE = 'Others';
 
 /**
- * Loads the data to display in the Sunburst chart and formats it for delivery
+ * Loads the data to display in the Sunburst chart and performs hierarchical grouping via a Wijmo
+ * CollectionView which is ultimately passed as a parameter to the callback function
  *
  * @param {dataSourceLoadedCallback} callback
  */
@@ -46,15 +47,18 @@ DataSourceAdapter.prototype.getChartDataSource = function _getChartDataSource(ca
     // properties object
     const elementData = rawElementData['periodic-table-elements'].map((item) => {
       const newItem = item;
-      newItem.properties.value = 1;
+      // Set one uniform property on all of the element Objects for chart binding. This binding
+      // determines the spatial positioning of the chart panels, and it has to be the same for
+      // every Object so that they are all equally sized on the chart.
+      newItem.properties.arcLengthValue = 1;
       return newItem.properties;
     });
 
-    // initialize a new object from the Wijmo CollectionView function using our "cleansed" array
+    // initialize a new Object from the Wijmo CollectionView function using our "cleansed" array
     const elementCv = new wijmo.collections.CollectionView(elementData);
 
     // Do the first tier of grouping
-    // We'll take advantage of the wijmo.collections.PropertyGroupDescription object to sort
+    // We'll take advantage of the wijmo.collections.PropertyGroupDescription Object to sort
     // elements in the collection view based on which constant array contains their type
     elementCv.groupDescriptions.push(new wijmo.collections.PropertyGroupDescription('type', (item, prop) => {
       if (METAL_TYPES.includes(item[prop])) {
@@ -83,10 +87,10 @@ DataSourceAdapter.prototype.getChartDataSource = function _getChartDataSource(ca
     const METAL_DESCRIPTIONS = 'Shiny,Soft,Highly Reactive,Low Melting Point|Ductile,Malleable,Low Density,High Melting Point|Brittle,Poor Metals,Low Melting Point|High Melting Point,High Density|Soluble,Highly Reactive|Radioactive,Paramagnetic'.split('|');
     const NON_METAL_DESCRIPTIONS = 'Volatile,Low Elasticity,Good Insulators|Colorless,Odorless,Low Chemical Reactivity|Toxic,Highly Reactive,Poor Conductors'.split('|');
     const OTHER_DESCRIPTIONS = 'Metallic looking solids,Semiconductors|Radioactive,Synthetic Elements'.split('|');
-    // create an array containing all of the element description arrays
+    // Create an array containing all of the element description arrays
     const DESCRIPTION_COLLECTION = [NON_METAL_DESCRIPTIONS, METAL_DESCRIPTIONS, OTHER_DESCRIPTIONS];
 
-    // Assign a new object property to each "subgroup" Object in the CollectionView based on the
+    // Assign a new Object property to each "subgroup" Object in the CollectionView based on the
     // arrays above. This property will be stored in the CollectionView items and can be recalled
     // later for display on the chart.
     for (let i = 0; i < elementCv.groups.length; i += 1) {
