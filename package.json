@@ -1,6 +1,6 @@
 {
   "name": "periodic-sunburst-of-the-elements",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "This is a novel interactive representation of the Periodic Table of Elements using a Wijmo Sunburst chart instead of the traditional 2D linear depiction.",
   "local-web-server": {
     "port": 8100

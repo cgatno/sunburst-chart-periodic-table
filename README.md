@@ -1,5 +1,7 @@
 # Wijmo 5 Periodic Sunburst
 
+[![GitHub version](https://badge.fury.io/gh/cgatno%2Fwijmo5_periodic_sunburst.svg)](https://badge.fury.io/gh/cgatno%2Fwijmo5_periodic_sunburst)
+
 This is a novel interactive representation of the Periodic Table of Elements using a sunburst chart instead of the traditional 2D linear depiction. The goal of this project is to document the process of creating the chart using only the [Wijmo 5 Sunburst control](http://demos.wijmo.com/5/Angular/SunburstIntro/SunburstIntro/) and some JavaScript conveniences.
 
 _[Skip right to installation](#prerequisites)_
