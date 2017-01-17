@@ -2,6 +2,8 @@
 const DataSourceAdapter = require('./data/DAL/DataSourceAdapter');
 const PropertiesTile = require('./view/PropertiesTile');
 
+/** Handle visual marking of a selected panel on the chart */
+
 // Set selected element variables in this outer scope to preserve them
 let lastSelectedEle;
 let lastSelectedEleFillColor;
@@ -11,7 +13,9 @@ let reshowText = false;
 let hiddenTextElement;
 
 /**
-   * Visually marks a panel at the given coordinates as selected
+   * A (potentially) recursive function that visually marks a panel at the given coordinates as
+   * selected. If a text label is clicked, the function will temporarily hide the label and recurse
+   * to ultimately locate the panel below.
    *
    * @param {number} panelX the X coordinate of the panel to mark
    * @param {number} panelY the Y coordinate of the panel to mark
@@ -49,6 +53,8 @@ function markSelectedPanel(panelX, panelY) {
     markSelectedPanel(panelX, panelY);
   }
 }
+
+/* Chart initialization */
 
 // Declare the sunburst object in the global scope so we can reference it in
 // event handlers, etc.
@@ -88,8 +94,7 @@ DataSourceAdapter.getChartDataSource((elementCollectionView) => {
     // If a panel is clicked, visually select it
     markSelectedPanel(e.clientX, e.clientY);
 
-    // Perform a hit test to get a clicked panel's name then use it to set up the info panel via the
-    // ViewAdapter
+    // Perform a hit test to get a clicked panel's associate JavaScript object
     const ht = mySunburst.hitTest(e);
     myPropTile.showInfoPanel(ht.item);
   });
