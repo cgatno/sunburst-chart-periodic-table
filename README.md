@@ -50,7 +50,7 @@ Everything you need to run and test the sample is built-in! Simply run
 
     npm start
 
-and then visit [http://localhost:8000](http://localhost:8000) in your browser.
+and then visit [http://localhost:8100](http://localhost:8100) in your browser.
 
 ### Building
 
