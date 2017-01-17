@@ -60,8 +60,7 @@ function markSelectedPanel(panelX, panelY) {
 // event handlers, etc.
 DataSourceAdapter.getChartDataSource((elementCollectionView) => {
   // Initialize the property tile by loading it and attaching it to the chart's DOM element
-  const myPropTile = new PropertiesTile();
-  myPropTile.attachToDom(document.getElementById('properties-tile'));
+  const myPropTile = new PropertiesTile(document.getElementById('properties-tile'));
   // Here we hook up PropertyTile's centerInParent() method to the window's resize event
   window.onresize = function _handleWindowResize() {
     myPropTile.centerInParent();
