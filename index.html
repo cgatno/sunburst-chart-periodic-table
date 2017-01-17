@@ -6,34 +6,20 @@
     <!-- Note the modified initial-scale. This makes things work smoothly on mobile by forcing the initial render to be 'zoomed out' -->
     <meta name="viewport" content="width=device-width, initial-scale=0.5">
     <title>Wijmo 5 Periodic Sunburst</title>
-    <!-- Core Wijmo references (required) -->
-    <script src="vendor/wijmo5/js/wijmo.min.js"></script>
-    <link href="vendor/wijmo5/css/wijmo.min.css" rel="stylesheet">
-    <!-- Wijmo core chart control and hierarchical chart controls -->
-    <script src="vendor/wijmo5/js/wijmo.chart.min.js"></script>
-    <script src="vendor/wijmo5/js/wijmo.chart.hierarchical.min.js"></script>
-    <!-- Wijmo custom theme (optional, include the theme you like) -->
-    <link href="vendor/wijmo5/css/wijmo.theme.modern.min.css" rel="stylesheet">
+    <!-- Core Wijmo references from CDN (required) -->
+    <script src="http://cdn.wijmo.com/5.latest/controls/wijmo.min.js"></script>
+    <link href="http://cdn.wijmo.com/5.latest/styles/wijmo.min.css" rel="stylesheet">
+    <!-- Wijmo core chart control and hierarchical chart controls (also from CDN) -->
+    <script src="http://cdn.wijmo.com/5.latest/controls/wijmo.chart.min.js"></script>
+    <script src="http://cdn.wijmo.com/5.latest/controls/wijmo.chart.hierarchical.min.js"></script>
     <!-- Primary bootstrap import -->
     <link rel="stylesheet" type="text/css" href="https://netdna.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
     <!-- Load our own custom CSS last -->
-    <link href="assets/css/style-main.min.css" rel="stylesheet">
+    <link href="dist/css/style-main.css" rel="stylesheet">
+    <script src="dist/js/app.js"></script>
 </head>
 
 <body>
-    <ul class="universal-nav" style="outline:1px solid rgba(255,255,255,.4);background:#000;width:100%;padding:12px 60px 12px 12px;margin:0;display:inline-block;box-sizing:border-box;color:#fff;font-family:sans-serif;font-size:12px;text-align: right;">
-        <li style="display:inline;"><a href="http://wijmo.com/" target="_blank" style="color:#fff;text-decoration:none;">Wijmo.com</a><span style="margin:0 10px;"
-                class="hidden-xs">|</span></li>
-        <li style="display:inline;" class="hidden-xs"><a href="http://wijmo.com/download/" target="_blank" style="color: #fff;text-decoration:none;">Download</a>
-            <span
-                style="margin:0 10px;">|</span>
-        </li>
-        <li style="display:inline;" class="hidden-xs"><a href="http://demos.wijmo.com/5/SampleExplorer/SampleExplorer/Search" target="_blank" style="color:#fff;text-decoration:none;">Sample Explorer</a>
-            <span
-                style="margin:0 10px;">|</span>
-        </li>
-        <li style="display:inline;" class="hidden-xs"><a href="http://wijmo.com/5/docs/" target="_blank" style="color:#fff;text-decoration:none;">Docs</a></li>
-    </ul>
     <div class="header visible-xs visible-sm">
         <div class="container">
             <h1>
@@ -51,7 +37,7 @@
                 Harness the power of Wijmo's Sunburst control to create a clearer organization of periodic table elements.
             </p>
             <p>
-                See how we did it <a href="http://wijmo.com/blog/rethinking-periodic-table-wijmo-sunburst/">the 'how to' blog post</a>.
+                See how we did it in <a href="http://wijmo.com/blog/rethinking-periodic-table-wijmo-sunburst/">the 'how to' blog post</a>.
             </p>
         </div>
     </div>
@@ -78,7 +64,6 @@
             </div>
         </div>
     </div>
-    <script src="assets/js/bundle.min.js"></script>
 </body>
 
 </html>
