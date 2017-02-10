@@ -8,9 +8,8 @@ const PropertiesTile = require('./view/PropertiesTile');
 let lastSelectedEle;
 let lastSelectedEleFillColor;
 
-// Determine if we need to reshow any text elements that we hid to find the right panel
-let reshowText = false;
-let hiddenTextElement;
+// Keep track of ALL hidden text elements in case of label overlap
+const hiddenTextElements = [];
 
 /**
    * A (potentially) recursive function that visually marks a panel at the given coordinates as
@@ -31,11 +30,6 @@ function markSelectedPanel(panelX, panelY) {
   if (typeof (selectedElement) !== 'undefined' &&
     selectedElement.hasAttribute('fill') &&
     selectedElement.tagName === 'path') {
-    if (reshowText) { // if we hid a text element last time, show it now
-      hiddenTextElement.style.display = '';
-      reshowText = false;
-    }
-
     // Reset the lastSelectedEle and then change the fill color of the clicked panel
     lastSelectedEle = selectedElement;
     const fillColor = selectedElement.getAttribute('fill');
@@ -43,12 +37,16 @@ function markSelectedPanel(panelX, panelY) {
     const rgbaValues = fillColor.replace('rgba(', '').replace(')', '').split(',');
     rgbaValues[3] = '1.0';
     selectedElement.setAttribute('fill', `rgba(${rgbaValues.join(',')})`);
+
+    // if any labels are hidden, show them
+    while (hiddenTextElements.length > 0) {
+      hiddenTextElements.pop().style.display = 'block';
+    }
   } else if (typeof (selectedElement) !== 'undefined' && selectedElement.tagName === 'text') { // super hacky way to get the right panel if a data label is clicked
     // Hide the data label
     selectedElement.style.display = 'none';
     // Set our outer scope variables so the text element is reshown
-    hiddenTextElement = selectedElement;
-    reshowText = true;
+    hiddenTextElements.push(selectedElement);
     // Run the method again with the data label hidden
     markSelectedPanel(panelX, panelY);
   }
