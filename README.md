@@ -34,7 +34,7 @@ You will need the following programs properly installed on your computer.
 * [Git](http://git-scm.com/)
 * [Node.js](http://nodejs.org/) (with NPM)
 
-## Installation
+## Quick Installation
 
 Clone the git repository:
 
@@ -44,7 +44,8 @@ Enter the source directory, install dependencies, and build:
 
     cd wijmo5_periodic_sunburst
     npm install
-    gulp
+    npm run build
+    npm start
 
 ## Running / Development
 
@@ -56,9 +57,9 @@ and then visit [http://localhost:8100](http://localhost:8100) in your browser.
 
 ### Building
 
-As indicated above, the toolchain for building is already included, too! Since the build system is configured with [Gulp.js](http://gulpjs.com/), in the source's root directory, just run
+As indicated above, the toolchain for building is already included, too! All you need to do is run
 
-    gulp
+    npm run build
 
 and all of the source JavaScript will be bundled (via [Browserify](http://browserify.org/)), transpiled (via [Babel](https://babeljs.io/)) and minified (via [UglifyJS](http://lisperator.net/uglifyjs/)). Those are a lot of cool JavaScript tools working together, huh?
 
